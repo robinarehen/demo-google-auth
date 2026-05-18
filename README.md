@@ -1,23 +1,22 @@
-# Demo Google Auth
+# Demo Validador MFA Auth con Códigos de un Solo Uso
 
-Una aplicación Java que demuestra la integración y autenticación con Google.
+Demo de una aplicación Java con la cual podemos validar los códigos de un solo uso, que nos generan las App generadoras de códigos de 6 digitos **TOTP**, como lo es Google Authenticator.
 
 ## Descripción
 
-Este proyecto implementa un flujo de autenticación con Google, permitiendo a los usuarios iniciar sesión de forma segura mediante sus credenciales de Google. Es un ejemplo completo que muestra las mejores prácticas para integrar OAuth 2.0 con Google en aplicaciones Java.
+Este proyecto implementa un flujo de validación de códigos generados por la App Google Authenticator.
 
 ## Características
 
-- ✅ Autenticación con Google OAuth 2.0
-- ✅ Gestión segura de tokens
-- ✅ Información del perfil de usuario
-- ✅ Implementación de ejemplo en Java
+- ✅ Validación de códigos de Google Authenticator.
+- ✅ Genera el QR el cual es leido desde la aplicación de Google para generar los códigos.
+- ✅ Recibe el código generado por la App el cual es validado.
 
-## Requisitos
+## Stack Tecnológico
 
-- Java 8 o superior
-- Maven o Gradle
-- Credenciales de Google Cloud (Client ID y Secret)
+- Java 21
+- Spring Boot 3.5.14
+- Maven
 
 ## Instalación
 
@@ -27,22 +26,30 @@ git clone https://github.com/robinarehen/demo-google-auth.git
 cd demo-google-auth
 ```
 
-2. Configura tus credenciales de Google en el archivo de propiedades:
-```properties
-google.client.id=tu-client-id
-google.client.secret=tu-client-secret
-google.redirect.uri=tu-redirect-uri
-```
-
-3. Compila el proyecto:
+2. Compila el proyecto:
 ```bash
 mvn clean install
 ```
 
+3. Ejecutar el proyecto:
+```bash
+mvn spring-boot:run
+```
+
 ## Uso
 
-Ejecuta la aplicación y sigue el flujo de autenticación con Google para iniciar sesión.
+Con el proyecto en ejecución
+
+1. Generar el QR  llamando a la url `localhost:8080/api/mfa/qr?email=tu-email`
+2. Desde la App Authenticator leer el QR
+3. Validar el código generado por la App llamado a la url `localhost:8080/api/mfa/verify` y pasando el json en el body
+```json
+{
+    "email":"sneyt04@gmail.com",
+    "code":"684174"
+}
+```
 
 ## Licencia
 
-Este proyecto está bajo licencia MIT.
+Este proyecto está bajo licencia `MIT`.

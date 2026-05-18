@@ -57,7 +57,8 @@ código-App = 638061
 ```
 
 ## Deuda Técnica
-Al ser un demo todo esta fijo en el código, para un uso en producción se debe implementar la logica que guarde en base de datos, el `secret key` asociado al `email` del usuario.
+Al ser un demo, todo esta fijo en el código, para un uso en producción se debe implementar la logica que guarde en base de datos, el `secret key` asociado al `email` del usuario, para poder conservar la `secret key` la cual tiene asociada a la App cada usuario. 
+Asegurar que el código se valida una sola vez y no se pueda usar varias veces, ya que el algoritmo te permite usarlo en una ventana de 30 segudos.
 
 ## Licencia
 

@@ -15,6 +15,8 @@ import com.rah.demo.googleauth.dto.VerificationResponse;
 import com.rah.demo.googleauth.service.TotpService;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 
 @RestController
 @RequestMapping("/api/mfa")
@@ -38,38 +40,19 @@ public class MfaController {
 	 * @return
 	 */
 	@GetMapping("/setup")
-	public ResponseEntity<SetupResponse> setupMfa(@RequestParam String email) {
+	public ResponseEntity<SetupResponse> setupMfa(@RequestParam @NotBlank @Email String email) {
 		return ResponseEntity.ok(this.totpService.getQrUrl(email));
 	}
 
 	@PostMapping("/verify")
 	public ResponseEntity<VerificationResponse> verifyMfa(@Valid @RequestBody VerificationRequest request) {
-		// Simulación: Aquí debes buscar en BD la 'secretKey' que guardaste para este
-		// request.email()
-		// Ejemplo estático, reemplázalo por tu valor en la BD.
-		// String userSecretKeyInDb = "L3HK6OCON63PUDIT";
-		// String userSecretKeyInDb = this.totpService.generateSecretKey();
-		// var response = this.totpService.verifyCode(userSecretKeyInDb,
-		// request.code());
 		VerificationResponse response = this.totpService.verifyCode(request);
 		return ResponseEntity.status(response.status()).body(response);
 	}
 
 	@GetMapping(value = "/qr", produces = MediaType.IMAGE_PNG_VALUE)
-	public ResponseEntity<byte[]> getMfaQrCode(@RequestParam String email) {
-		// 1. Simulación: En un entorno real, buscarías si el usuario ya tiene un
-		// secretKey en BD.
-		// Si no existe, lo generas y lo guardas.
-		// Para esta prueba generamos uno estático o dinámico:
-		// String secretKey = this.totpService.generateSecretKey();
-		// 2. Generar la estructura de la URL requerida por Google
-		// String qrUrl = this.totpService.getQrUrl(secretKey, email, "Rah-developers");
-		// 3. Convertir esa URL en una imagen PNG de 250x250 píxeles
-		// byte[] qrImage = this.totpService.generateQrCodeImage(qrUrl, 250, 250);
-
+	public ResponseEntity<byte[]> getMfaQrCode(@RequestParam @NotBlank @Email String email) {
 		byte[] qrImage = this.totpService.generateQrCodeImage(email, 250, 250);
-
-		// 4. Retornar los bytes con el tipo de contenido adecuado
 		return ResponseEntity.ok().contentType(MediaType.IMAGE_PNG).body(qrImage);
 	}
 }

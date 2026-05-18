@@ -23,8 +23,6 @@ import com.rah.demo.googleauth.repository.UserDataRepository;
 @Service
 public class TotpService {
 
-	private static final String SECRET_KEY = Base32.random();
-
 	private UserDataRepository userDataRepository;
 
 	public TotpService(UserDataRepository userDataRepository) {
@@ -67,20 +65,38 @@ public class TotpService {
 
 	public VerificationResponse verifyCode(VerificationRequest request) {
 		try {
-			// Simulación: Aquí debes buscar en BD la 'secretKey' que guardaste para este
-			// request.email()
-			Totp totp = new Totp(SECRET_KEY);
 
-			if (totp.verify(request.code())) {
-				// Aquí puedes marcar al usuario como "MFA verificado" en tu sesión o generar un
-				// JWT
-				return new VerificationResponse(true, 200, "Código verificado correctamente");
-			} else {
-				return new VerificationResponse(false, 401, "Código inválido o expirado");
-			}
+			Optional<UserDataEntity> userData = this.userDataRepository.findByUserEmail(request.email());
+
+			return userData.map(data -> {
+
+				if (request.code().equals(data.getLastCode())) {
+					return mapperVerification(401, "El Código ya fue utilizado");
+				}
+
+				Totp totp = new Totp(data.getUserSecretKey());
+
+				if (totp.verify(request.code())) {
+					// Aquí puedes marcar al usuario como "MFA verificado" en tu sesión o generar un
+					// JWT
+					data.setLastCode(request.code());
+					this.userDataRepository.save(data);
+
+					return mapperVerification(200, "Código verificado correctamente");
+				} else {
+					return mapperVerification(401, "Código inválido o expirado");
+				}
+
+			}).orElse(mapperVerification(401, "Email no inválido"));
+
 		} catch (Exception exception) {
-			return new VerificationResponse(false, 401, "Código inválido o expirado");
+			return mapperVerification(500, "Error Interno");
 		}
+	}
+
+	private VerificationResponse mapperVerification(int status, String message) {
+		boolean success = (status == 200);
+		return new VerificationResponse(success, status, message);
 	}
 
 	public byte[] generateQrCodeImage(String email, int width, int height) {

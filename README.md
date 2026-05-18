@@ -56,6 +56,8 @@ código-App = 638061
 }
 ```
 
+## Deuda Técnica
+Al ser un demo todo esta fijo en el código, para un uso en producción se debe implementar la logica que guarde en base de datos, el `secret key` asociado al `email` del usuario.
 
 ## Licencia
 

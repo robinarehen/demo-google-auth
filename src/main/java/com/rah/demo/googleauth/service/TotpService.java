@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.Optional;
 
 import org.jboss.aerogear.security.otp.Totp;
 import org.jboss.aerogear.security.otp.api.Base32;
@@ -16,26 +17,51 @@ import com.google.zxing.qrcode.QRCodeWriter;
 import com.rah.demo.googleauth.dto.SetupResponse;
 import com.rah.demo.googleauth.dto.VerificationRequest;
 import com.rah.demo.googleauth.dto.VerificationResponse;
+import com.rah.demo.googleauth.entity.UserDataEntity;
+import com.rah.demo.googleauth.repository.UserDataRepository;
 
 @Service
 public class TotpService {
 
 	private static final String SECRET_KEY = Base32.random();
 
+	private UserDataRepository userDataRepository;
+
+	public TotpService(UserDataRepository userDataRepository) {
+		super();
+		this.userDataRepository = userDataRepository;
+	}
+
 	public String generateSecretKey() {
-		return SECRET_KEY;
+		return Base32.random();
 	}
 
 	public SetupResponse getQrUrl(String email) {
+
+		Optional<UserDataEntity> userDataDb = this.userDataRepository.findByUserEmail(email);
+
+		return userDataDb.map(data -> new SetupResponse(data.getUserSecretKey(), data.getQrCodeUrl())).orElseGet(() -> {
+
+			String secretKey = this.generateSecretKey();
+			String qrUrl = this.generateQrUrl(secretKey, email);
+
+			var userData = new UserDataEntity(secretKey, email, qrUrl);
+
+			this.userDataRepository.save(userData);
+
+			return new SetupResponse(secretKey, qrUrl);
+		});
+
+	}
+
+	private String generateQrUrl(String secretKey, String email) {
 		try {
 			String issuer = "Rah-developers";
 			String urlIssuerEmail = URLEncoder.encode(issuer + ":" + email, StandardCharsets.UTF_8.name());
 			String urlIssuer = URLEncoder.encode(issuer, StandardCharsets.UTF_8.name());
-			String qrCodeUrl = String.format("otpauth://totp/%s?secret=%s&issuer=%s", urlIssuerEmail, SECRET_KEY,
-					urlIssuer);
-			return new SetupResponse(SECRET_KEY, qrCodeUrl);
-		} catch (UnsupportedEncodingException e) {
-			throw new RuntimeException("Error codificando la URL del código QR", e);
+			return String.format("otpauth://totp/%s?secret=%s&issuer=%s", urlIssuerEmail, secretKey, urlIssuer);
+		} catch (UnsupportedEncodingException exception) {
+			throw new RuntimeException("Error codificando la URL del código QR", exception);
 		}
 	}
 

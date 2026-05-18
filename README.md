@@ -45,8 +45,8 @@ Con el proyecto en ejecución
 3. Validar el código generado por la App llamado a la url `localhost:8080/api/mfa/verify` y pasando el json en el body
 ```json
 {
-    "email":"sneyt04@gmail.com",
-    "code":"684174"
+    "email":"tu-email",
+    "code":"código de la App"
 }
 ```
 

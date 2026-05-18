@@ -44,7 +44,6 @@ public class TotpService {
 			String qrUrl = this.generateQrUrl(secretKey, email);
 
 			var userData = new UserDataEntity(secretKey, email, qrUrl);
-
 			this.userDataRepository.save(userData);
 
 			return new SetupResponse(secretKey, qrUrl);
@@ -74,23 +73,28 @@ public class TotpService {
 					return mapperVerification(401, "El Código ya fue utilizado");
 				}
 
-				Totp totp = new Totp(data.getUserSecretKey());
-
-				if (totp.verify(request.code())) {
-					// Aquí puedes marcar al usuario como "MFA verificado" en tu sesión o generar un
-					// JWT
-					data.setLastCode(request.code());
-					this.userDataRepository.save(data);
-
-					return mapperVerification(200, "Código verificado correctamente");
-				} else {
-					return mapperVerification(401, "Código inválido o expirado");
-				}
+				return totpVerify(request.code(), data);
 
 			}).orElse(mapperVerification(401, "Email no inválido"));
 
 		} catch (Exception exception) {
 			return mapperVerification(500, "Error Interno");
+		}
+	}
+
+	private VerificationResponse totpVerify(String code, UserDataEntity data) {
+		Totp totp = new Totp(data.getUserSecretKey());
+
+		if (totp.verify(code)) {
+			// Aquí puedes marcar al usuario como "MFA verificado" en tu sesión o generar un
+			// JWT
+			// Se guarca el código verificado para que no pueda ser reutilizado 
+			data.setLastCode(code);
+			this.userDataRepository.save(data);
+
+			return mapperVerification(200, "Código verificado correctamente");
+		} else {
+			return mapperVerification(401, "Código inválido o expirado");
 		}
 	}
 

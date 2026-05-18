@@ -14,6 +14,8 @@ import com.rah.demo.googleauth.dto.VerificationRequest;
 import com.rah.demo.googleauth.dto.VerificationResponse;
 import com.rah.demo.googleauth.service.TotpService;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/api/mfa")
 public class MfaController {
@@ -41,7 +43,7 @@ public class MfaController {
 	}
 
 	@PostMapping("/verify")
-	public ResponseEntity<VerificationResponse> verifyMfa(@RequestBody VerificationRequest request) {
+	public ResponseEntity<VerificationResponse> verifyMfa(@Valid @RequestBody VerificationRequest request) {
 		// Simulación: Aquí debes buscar en BD la 'secretKey' que guardaste para este
 		// request.email()
 		// Ejemplo estático, reemplázalo por tu valor en la BD.

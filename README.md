@@ -40,15 +40,22 @@ mvn spring-boot:run
 
 Con el proyecto en ejecución
 
+> No olvide reemplar los valores de ejemplo
+```
+tu-email = sneyt04@gmail.com
+código-App = 638061
+```
+
 1. Generar el QR  llamando a la url `localhost:8080/api/mfa/qr?email=tu-email`
 2. Desde la App Authenticator leer el QR
 3. Validar el código generado por la App llamado a la url `localhost:8080/api/mfa/verify` y pasando el json en el body
 ```json
 {
     "email":"tu-email",
-    "code":"código de la App"
+    "code":"código-App"
 }
 ```
+
 
 ## Licencia
 

@@ -82,15 +82,15 @@ public class TotpService {
 		}
 	}
 
-	private VerificationResponse totpVerify(String code, UserDataEntity data) {
-		Totp totp = new Totp(data.getUserSecretKey());
+	private VerificationResponse totpVerify(String code, UserDataEntity userData) {
+		Totp totp = new Totp(userData.getUserSecretKey());
 
 		if (totp.verify(code)) {
 			// Aquí puedes marcar al usuario como "MFA verificado" en tu sesión o generar un
 			// JWT
-			// Se guarca el código verificado para que no pueda ser reutilizado 
-			data.setLastCode(code);
-			this.userDataRepository.save(data);
+			// Se guarda el código verificado para que no pueda ser reutilizado
+			userData.setLastCode(code);
+			this.userDataRepository.save(userData);
 
 			return mapperVerification(200, "Código verificado correctamente");
 		} else {

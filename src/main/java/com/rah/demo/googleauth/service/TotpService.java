@@ -20,15 +20,13 @@ import com.rah.demo.googleauth.dto.VerificationResponse;
 import com.rah.demo.googleauth.entity.UserDataEntity;
 import com.rah.demo.googleauth.repository.UserDataRepository;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class TotpService {
 
-	private UserDataRepository userDataRepository;
-
-	public TotpService(UserDataRepository userDataRepository) {
-		super();
-		this.userDataRepository = userDataRepository;
-	}
+	private final UserDataRepository userDataRepository;
 
 	public String generateSecretKey() {
 		return Base32.random();

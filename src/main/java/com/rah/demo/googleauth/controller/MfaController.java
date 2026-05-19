@@ -30,11 +30,11 @@ public class MfaController {
 	}
 
 	/**
-	 * Retornar los siguientes valores
+	 * Retorna los siguientes valores
 	 * 
-	 * La URL: con la que se puede generar el QR con alguna pagina online
+	 * URL: con la que se puede generar el QR con alguna pagina online
 	 * 
-	 * El SecretKey: el cual se puede pasar a la aplicación que genera el código
+	 * SecretKey: el cual se puede pasar a la aplicación que genera el código
 	 * 
 	 * @param email
 	 * @return

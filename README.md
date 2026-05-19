@@ -42,6 +42,8 @@ mvn spring-boot:run
 
 ## Uso
 
+### Validar Códigos TOTP
+
 Con el proyecto en ejecución
 
 > No olvide reemplar los valores de ejemplo
@@ -60,9 +62,36 @@ código-App = 638061
 }
 ```
 
+### Login con Google
+
+> Pasos previos
+1. Crear un proyecto nuevo en la consola de  [Google Cloud Console](https://console.cloud.google.com/welcome)
+
+2. Configurar la url, generar el `ID` y `SECRET` del cliente, consultar el paso a paso con la `IA GEMINIS`
+
+3. Ingresar el `ID` y `SECRET` del cliente en el `yaml` del proyecto
+```yaml
+spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${TU_CLIENT_ID_DE_GOOGLE}
+            client-secret: ${TU_CLIENT_SECRET_DE_GOOGLE}
+            scope:
+              - email
+              - profile
+```
+
+> Con el proyecto en Ejecución
+
+1. al llamar a la url `localhost:8080/auth/user` nos redirige al login donde podemos tomar `Google` o `GitHub`
+
+2. Al ingresar tus datos son validados y luego redirigido de nuevo a la aplicación.
+
 ## Deuda Técnica
-Al ser un demo, todo esta fijo en el código, para un uso en producción se debe implementar la logica que guarde en base de datos, el `secret key` asociado al `email` del usuario, para poder conservar la `secret key` la cual tiene asociada a la App cada usuario. 
-Asegurar que el código se valida una sola vez y no se pueda usar varias veces, ya que el algoritmo te permite usarlo en una ventana de 30 segudos.
+
 
 ## Licencia
 

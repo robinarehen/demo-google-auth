@@ -1,16 +1,20 @@
-# Demo Validador MFA Auth con Códigos de un Solo Uso
+# Demo Validador MFA Auth con Códigos de un Solo Uso y Single-Sing-On SSO
 
-Demo de una aplicación Java con la cual podemos validar los códigos de un solo uso, que nos generan las App generadoras de códigos de 6 digitos **TOTP**, como lo es Google Authenticator.
+Demo de una aplicación Java con la cual podemos validar los códigos de un solo uso, que nos generan las App generadoras de códigos de 6 digitos **TOTP**, como lo es `Google Authenticator`.
 
 ## Descripción
+Este proyecto implementa lo siguiente.
 
-Este proyecto implementa un flujo de validación de códigos generados por la App Google Authenticator.
+1. Un flujo de validación de códigos generados por la App Google Authenticator.
+
+2. La autenticación con la cuenta de Gamil de Google o Github, agregando el `ID` y la `SECRET`, los cuales se deben generar en la plataforma correspondiente.
 
 ## Características
 
 - ✅ Validación de códigos de Google Authenticator.
 - ✅ Genera el QR el cual es leido desde la aplicación de Google para generar los códigos.
 - ✅ Recibe el código generado por la App el cual es validado.
+- ✅ Se implementa la autenticación con Google o Github.
 
 ## Stack Tecnológico
 

@@ -1,12 +1,34 @@
 package com.rah.demo.googleauth.service;
 
+import java.time.Instant;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
 import com.rah.demo.googleauth.dto.UserDto;
 
 @Service
 public class AuthService {
+
+	@Value("${jwt.secret}")
+	private String secret;
+
+	@Value("${jwt.expiration}")
+	private long expiration;
+
+	public String generateToken(String email, String name) {
+		// @formatter:off
+		return JWT.create()
+				.withSubject(email)
+				.withClaim("name", name)
+				.withIssuedAt(Instant.now())
+				.withExpiresAt(Instant.now().plusMillis(this.expiration))
+				.sign(Algorithm.HMAC256(secret));
+		// @formatter:on
+	}
 
 	public UserDto processOAuth2User(OAuth2User oAuth2User) {
 		if (oAuth2User == null) {
@@ -18,7 +40,7 @@ public class AuthService {
 		String email = oAuth2User.getAttribute("email");
 		String picture = oAuth2User.getAttribute("picture");
 
-		return new UserDto(name, email, picture, "Google-Auth-1");
+		return new UserDto(name, email, picture, "Google-Auth-1", this.generateToken(email, name));
 	}
 
 	public UserDto processOAuth2User(OAuth2User oAuth2User, String clientRegistrationId) {
@@ -46,6 +68,6 @@ public class AuthService {
 			picture = oAuth2User.getAttribute("picture");
 		}
 
-		return new UserDto(name, email, picture, "Google-Auth-1");
+		return new UserDto(name, email, picture, "Google-Auth-1", this.generateToken(email, name));
 	}
 }

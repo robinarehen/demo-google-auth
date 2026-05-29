@@ -1,11 +1,13 @@
 server:
-  port: 8080
+  port: 8081
 
+# JWT Config
 jwt:
   secret: ${JWT_SECRET}
   expiration: 86400000 # 24 horas en milisegundos
 
 ---
+# Data base config
 spring:
   application:
     name: demo-google-auth
@@ -16,12 +18,16 @@ spring:
     password: 
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: create-drop
+    defer-datatype-initialization: true
     show-sql: true
   h2:
     console:
       enabled: true
 
 ---
+# Auth Google and Github login config
 spring:
   security:
     oauth2:

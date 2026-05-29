@@ -2,6 +2,8 @@ package com.rah.demo.googleauth.entity;
 
 import java.time.LocalDateTime;
 
+import com.rah.demo.googleauth.dto.MfaStatus;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -29,6 +31,7 @@ public class UserDataEntity {
 	private String qrCodeUrl;
 	private String lastCode;
 	private LocalDateTime createDate;
+	private String mfaStatus;
 
 	public UserDataEntity(String userSecretKey, String userEmail, String qrCodeUrl) {
 		super();
@@ -40,6 +43,7 @@ public class UserDataEntity {
 	@PrePersist
 	void prePersist() {
 		this.createDate = LocalDateTime.now();
+		this.mfaStatus = MfaStatus.PENDING.name();
 	}
 
 }

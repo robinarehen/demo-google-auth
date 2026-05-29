@@ -14,6 +14,7 @@ import com.google.zxing.BarcodeFormat;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
+import com.rah.demo.googleauth.dto.MfaStatus;
 import com.rah.demo.googleauth.dto.SetupResponse;
 import com.rah.demo.googleauth.dto.VerificationRequest;
 import com.rah.demo.googleauth.dto.VerificationResponse;
@@ -88,6 +89,7 @@ public class TotpService {
 			// JWT
 			// Se guarda el código verificado para que no pueda ser reutilizado
 			userData.setLastCode(code);
+			userData.setMfaStatus(MfaStatus.ACTIVATED.name());
 			this.userDataRepository.save(userData);
 
 			return mapperVerification(200, "Código verificado correctamente");

@@ -21,13 +21,19 @@ public class AuthController {
 	private final AuthService authService;
 
 	@GetMapping("/user")
-	public ResponseEntity<UserDto> getUserProfile(@AuthenticationPrincipal OAuth2User oAuth2User) {
+	public ResponseEntity<Object> getUserProfile(@AuthenticationPrincipal OAuth2User oAuth2User) {
 		UserDto userDto = authService.processOAuth2User(oAuth2User);
-		return ResponseEntity.ok(userDto);
+
+		return redirect(userDto);
+//		return ResponseEntity.ok(userDto);
+	}
+
+	ResponseEntity<Object> redirect(UserDto userDto) {
+		return ResponseEntity.ok(this.authService.enviarMfaQr(userDto));
 	}
 
 	@GetMapping("/multi-user")
-	public ResponseEntity<UserDto> getUserProfile(OAuth2AuthenticationToken authentication) {
+	public ResponseEntity<Object> getUserProfile(OAuth2AuthenticationToken authentication) {
 		if (authentication == null) {
 			return ResponseEntity.status(401).build();
 		}
@@ -39,6 +45,8 @@ public class AuthController {
 		var oAuth2User = authentication.getPrincipal();
 
 		UserDto userDto = authService.processOAuth2User(oAuth2User, provider);
-		return ResponseEntity.ok(userDto);
+
+		return redirect(userDto);
+//		return ResponseEntity.ok(userDto);
 	}
 }

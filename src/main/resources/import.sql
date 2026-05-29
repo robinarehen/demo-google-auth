@@ -1,0 +1,1 @@
+INSERT INTO USER_DATA (user_secret_key, user_email, qr_code_url, mfa_status, last_code, create_date) VALUES ('BABDZR576SOQBTE7', 'robinarehen@gmail.com', 'otpauth://totp/Rah-developers%3Arobinarehen%40gmail.com?secret=BABDZR576SOQBTE7&issuer=Rah-developers', 'ACTIVATED', '', now());
